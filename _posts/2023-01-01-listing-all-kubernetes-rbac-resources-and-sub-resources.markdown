@@ -43,15 +43,15 @@ UUID=$(uuidgen)
 APIS=$(curl --key $2 --cert $3 --cacert $4 -s $1/apis | jq -r '[.groups | .[].name] | join(" ")')
 
 # Add header to tmp output file
-echo "API Resource Verb" >> /tmp/list_rbac_resources_${UUID}
+echo "API Resource Verb Namespaced Kind" >> /tmp/list_rbac_resources_${UUID}
 
 # Get the list of resources/sub-resources from the core API
-curl --key $2 --cert $3 --cacert $4 -s $1/api/v1 | jq -r --arg api core '.resources | .[] | "\($api) \(.name) \(.verbs | join(","))"' >> /tmp/list_rbac_resources_${UUID}
+curl --key $2 --cert $3 --cacert $4 -s $1/api/v1 | jq -r --arg api "$api" '.resources | .[] | "\($api) \(.name) \(.verbs | join(",")) \(.namespaced) \(.kind)"' >> /tmp/list_rbac_resources_${UUID}
 
 # Get the list of resources/sub-resources from the other APIs
 for api in $APIS; do
     version=$(curl --key $2 --cert $3 --cacert $4 -s $1/apis/$api | jq -r '.preferredVersion.version')
-    curl --key $2 --cert $3 --cacert $4 -s $1/apis/$api/$version | jq -r --arg api "$api" '.resources | .[]? | "\($api) \(.name) \(.verbs | join(","))"' >> /tmp/list_rbac_resources_${UUID}
+    curl --key $2 --cert $3 --cacert $4 -s $1/apis/$api/$version | jq -r --arg api "$api" '.resources | .[]? | "\($api) \(.name) \(.verbs | join(",")) \(.namespaced) \(.kind)"' >> /tmp/list_rbac_resources_${UUID}
 done
 
 # Print the list of resources/sub-resources using the column command
@@ -64,30 +64,9 @@ rm -rf /tmp/list_rbac_resources_${UUID}
 ## Example
 
 ```shell
-$ ./list_rbac_resources.sh https://10.0.0.1:6443 client.key client.crt ca.crt
-
-API                           Resource                             Verb
-core                          bindings                             create
-core                          componentstatuses                    get,list
-core                          configmaps                           create,delete,deletecollection,get,list,patch,update,watch
-core                          endpoints                            create,delete,deletecollection,get,list,patch,update,watch
-core                          events                               create,delete,deletecollection,get,list,patch,update,watch
-core                          limitranges                          create,delete,deletecollection,get,list,patch,update,watch
-core                          namespaces                           create,delete,get,list,patch,update,watch
-core                          namespaces/finalize                  update
-core                          namespaces/status                    get,patch,update
-core                          nodes                                create,delete,deletecollection,get,list,patch,update,watch
-core                          nodes/proxy                          create,delete,get,patch,update
-core                          nodes/status                         get,patch,update
-core                          persistentvolumeclaims               create,delete,deletecollection,get,list,patch,update,watch
-core                          persistentvolumeclaims/status        get,patch,update
-core                          persistentvolumes                    create,delete,deletecollection,get,list,patch,update,watch
-core                          persistentvolumes/status             get,patch,update
-core                          pods                                 create,delete,deletecollection,get,list,patch,update,watch
-core                          pods/attach                          create,get
-core                          pods/binding                         create
-core                          pods/ephemeralcontainers             get,patch,update
-core                          pods/eviction                        create
-...
-...
+$ ./list_rbac_resources.sh https://172.31.123.141:6443 client.key client.crt ca.crt
 ```
+
+<br>
+
+![list rbac resources output](https://raw.githubusercontent.com/sculley/sculley.github.io/main/img/list_rbac_resources_output.png)
