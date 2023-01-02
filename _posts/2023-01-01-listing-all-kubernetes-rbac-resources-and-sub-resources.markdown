@@ -64,7 +64,7 @@ rm -rf /tmp/list_rbac_resources_${UUID}
 ## Example
 
 ```shell
-$ ./list_rbac_resources.sh https://kubernetes.default.svc:443 client.key client.crt ca.crt
+$ ./list_rbac_resources.sh https://10.0.0.1:6443 client.key client.crt ca.crt
 
 API                           Resource                             Verb
 core                          bindings                             create
