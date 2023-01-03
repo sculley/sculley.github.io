@@ -31,7 +31,7 @@ kubectl config view --raw -o json | jq -r '.clusters[0].cluster."certificate-aut
 Copy the following script to a file and run it with the required arguments
 
 ```shell
-#!/bin/bash
+#!/usr/bin/env bash
 # list_rbac_resources.sh - list all the kubernetes rbac resources/sub-resources
 # Requires jq (https://stedolan.github.io/jq/)
 # Usage: ./list_rbac_resources.sh <kubernetes api server url> <client key> <client cert> <ca cert>
