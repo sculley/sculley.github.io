@@ -11,6 +11,8 @@ When managing complex infrastructure with Terraform, keeping your variables orga
 
 terraform-variable-sort is a handy script designed to bring order to your Terraform variable files. By sorting your variables alphabetically, you can improve readability and ensure that your variable definitions follow a consistent pattern. Whether you're working on a small project or a large-scale infrastructure, maintaining well-organized variable files is essential.
 
+For more information on the terraform-variable-sort script look [here](https://github.com/sculley/terraform-variable-sort)
+
 ## Requirements
 
 This script relies on GNU `awk`, which is readily available on most Linux distributions. If you're using macOS, you can install gawk using Homebrew:
